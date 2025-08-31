@@ -141,15 +141,22 @@ app.get("/admin-approve/:requestId", async (req, res) => {
     `;
 
     if (rows[0].email) {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: rows[0].email,
-        subject: "🎉 Your Resume Request is Approved!",
-        html: userHtml,
-      });
-    } else {
-      console.warn("No email for request; user notification skipped.");
-    }
+  try {
+    await transporter.sendMail({
+      from: `"Resume Bot" <${process.env.EMAIL_USER}>`, // ✅ better sender format
+      to: rows[0].email,
+      subject: "🎉 Your Resume Request is Approved!",
+      text: `Hi ${rows[0].name},\n\nYour resume request has been approved.\nClick here to download: ${userDownloadLink}\n\nNote: Link valid for ${Math.floor(LINK_EXPIRY_MS/60000)} minutes.`,
+      html: userHtml,
+    });
+    console.log(`✅ Mail sent to ${rows[0].email}`);
+  } catch (err) {
+    console.error(`❌ Failed to send mail to ${rows[0].email}:`, err);
+  }
+} else {
+  console.warn("⚠️ No email for request; user notification skipped.");
+}
+
 
     // (Optional) Auto-expire: *we don't rely solely on setTimeout for expiry*
     // but we can attempt to mark it expired after LINK_EXPIRY_MS for convenience.
