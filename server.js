@@ -141,16 +141,16 @@ app.get("/admin-approve/:requestId", async (req, res) => {
     `;
 
     if (rows[0].email) {
-  try {
-    await transporter.sendMail({
+    try {
+      await transporter.sendMail({
       from: `"Resume Bot" <${process.env.EMAIL_USER}>`, // ✅ better sender format
       to: rows[0].email,
       subject: "🎉 Your Resume Request is Approved!",
-      text: `Hi ${rows[0].name},\n\nYour resume request has been approved.\nClick here to download: ${userDownloadLink}\n\nNote: Link valid for ${Math.floor(LINK_EXPIRY_MS/60000)} minutes.`,
+      text: `Hi ${rows[0].name},\n\nYour resume request has been approved.\nClick here to download Chakit's Resume: ${userDownloadLink}\n\nNote: Link valid for ${Math.floor(LINK_EXPIRY_MS/60000)} minutes.`,
       html: userHtml,
     });
     console.log(`✅ Mail sent to ${rows[0].email}`);
-  } catch (err) {
+    } catch (err) {
     console.error(`❌ Failed to send mail to ${rows[0].email}:`, err);
   }
 } else {
