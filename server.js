@@ -58,7 +58,7 @@ app.post("/request-resume", async (req, res) => {
     }
 
     const [result] = await db.query(
-      "INSERT INTO resume_requests (name, email, reason, status, requested_at) VALUES (?, ?, ?, 'pending', NOW())",
+      "INSERT INTO resume_requests (name, email, reason, status, created_at , approved_at) VALUES (?, ?, ?, 'pending', NOW())",
       [name, email, reason]
     );
 
